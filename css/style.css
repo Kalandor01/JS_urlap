@@ -1,0 +1,56 @@
+
+main, header, section, article, aside {
+    border: solid 1px black;
+    padding: 5px;
+}
+
+body {
+    background-color: rgb(168, 168, 168);
+}
+
+main {
+    background-color: rgb(150, 150, 150);
+    display: grid;
+    grid-template-areas: "h h"
+                         "s s"
+                         "a as";
+}
+
+header {
+    grid-area: h;
+}
+
+section {
+    grid-area: s;
+}
+
+article {
+    grid-area: a;
+}
+
+aside {
+    grid-area: as;
+}
+
+#ttt {
+    width: 250px;
+    margin: 10px;
+    display: flex;
+    margin: auto;
+    flex-wrap: wrap;
+    padding: 10px;
+    background-color: bisque;
+}    
+
+#ttt>div {
+    background-color: gray;
+    border: solid 1px black;
+    text-align: center;
+    flex: 0 0 auto;
+    width: 32%;
+    height: 50px;
+}
+
+#ttt>.selected {
+    background-color: cornsilk;
+}
