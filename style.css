@@ -44,6 +44,8 @@ body {
     display: flex;
     margin: auto;
     flex-wrap: wrap;
+    padding: 10px;
+    background-color: bisque;
 }    
 
 #ttt>div {
@@ -57,15 +59,4 @@ body {
 
 #ttt>.selected {
     background-color: cornsilk;
-}
-
-@media screen and (max-width:300px) {
-    #ttt {
-        width: 150px;
-    }
-
-    #ttt>div {
-        width: 32%;
-        height: 20px;
-    }
 }
