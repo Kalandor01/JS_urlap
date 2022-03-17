@@ -61,6 +61,13 @@ function calculate_winner()
         }
     }
     console.log(board);
+    let x_wins = 0, y_wins = 0;
+    let line = true, cross1 = true, cross2 = true;
+    for (let x = 0; x < board.length; x++) {
+        for (let y = 0; y < board.length; y++) {
+            
+        }
+    }
     let winner_text = "X nyert!";
     return winner_text;
 }
