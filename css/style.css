@@ -1,5 +1,5 @@
 
-main, header, section, article, aside {
+header, section, article, aside {
     border: solid 1px black;
     padding: 5px;
 }
@@ -18,10 +18,12 @@ main {
 
 header {
     grid-area: h;
+    text-align: center;
 }
 
 section {
     grid-area: s;
+    background-color: rgb(168, 168, 168);
 }
 
 article {
