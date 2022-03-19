@@ -13,55 +13,84 @@ function querry_all(name, arg) {
     document.querySelectorAll(name).forEach(elem => {arg(elem)});
 }
 
-var board_size = 4;
+var board_size = 5;
 var lepes = 0;
+var p1_name = "X";
+var p2_name = "O";
+
+function background_in(evt)
+{
+    evt.target.style.backgroundColor = "darkgray";
+    if(evt.target.className == "mezo, selected")
+        evt.target.removeEventListener("mouseover", background_in);
+}
+
+function background_out(evt)
+{
+    evt.target.style.backgroundColor = "";
+}
+
+function change_simbol(evt)
+{
+    p_elem = evt.target.firstChild;
+    if(lepes % 2 == 0)
+    {
+        p_elem.innerHTML = "X";
+        querry("#progress>p:nth-child(2)").innerHTML = "Az aktuális játékos: " + p2_name;
+    }
+    else
+    {
+        p_elem.innerHTML = "O";
+        querry("#progress>p:nth-child(2)").innerHTML = "Az aktuális játékos: " + p1_name;
+    }
+    evt.target.removeEventListener("click", change_simbol);
+    evt.target.removeEventListener("mouseover", background_in);
+    evt.target.className += ", selected";
+    lepes++;
+    let status = calculate_winner();
+    if(status != 0 || lepes==Math.pow(board_size, 2))
+    {
+        let winner_text = "Döntetlen!";
+        if(status == 1)
+            winner_text = p1_name + " nyert!";
+        else if(status == -1)
+            winner_text = p2_name + " nyert!";
+        querry("#progress>p:nth-child(2)").innerHTML = `Eredmény: ${winner_text}`;
+        querry_all("#ttt>.mezo", q=>q.className += ", selected");
+        querry_all("#ttt>.selected", q=>q.removeEventListener("click", change_simbol));
+        querry_all("#ttt>.selected", q=>q.removeEventListener("mouseover", background_in));
+    }
+}
+
+function start_play(p1, p2)
+{
+    if(p1!="")
+        p1_name = p1;
+    if(p2!="")
+        p2_name = p2;
+    //disable forms
+    querry_all("section>form>input", q=>q.disabled = true);
+    //addevent
+    querry_all("#ttt>div", q=>q.className = "mezo");
+    querry_all("#ttt>.mezo", q=>q.addEventListener("mouseout", background_out));
+    querry_all("#ttt>.mezo", q=>q.addEventListener("mouseover", background_in));
+    querry_all("#ttt>.mezo", q=>q.addEventListener("click", change_simbol));
+    //kezd txt
+    querry("#progress>p:nth-child(2)").innerHTML = p1_name + " kezd.";
+}
 
 function init() {
-    querry("body").innerHTML = '<main><header><h1>Tic-Tac-Toe</h1></header><section></section><article></article><aside><div id="title"></div><div id="progress"><p>Játék állapota:</p><p>X kezd.</p></div></aside></main>';
+    querry("body").innerHTML = '<main><header><h1>Tic-Tac-Toe</h1></header><section></section><article></article><aside><div id="title"></div><div id="progress"><p>Játék állapota:</p><p>Névmegadásra várrás...</p></div></aside></main>';
+    querry("section").innerHTML = '<p>A játékosok neve:</p><form onsubmit="start_play(p1.value, p2.value);return false"><label for="p1">1. játékos (X)</label><br><input type="text" id="p1" name="p1" value="X"><br><label for="p2">2. játékos (O)</label><br><input type="text" id="p2" name="p2" value="O"><br><br><input type="submit" value="Kezdhetjük?"></form>';
     querry("article").innerHTML += '<div id="ttt"></div>';
     for (let x = 0; x < Math.pow(board_size, 2); x++) {
-        querry("#ttt").innerHTML += '<div class="mezo"><p></p></div>';
+        querry("#ttt").innerHTML += '<div><p></p></div>';
     }
     //css grid
     let grids = "";
     for (let x = 0; x < board_size; x++)
         grids += "1fr ";
     querry("#ttt").style.gridTemplateColumns = grids;
-    //addevent
-    querry_all("#ttt>.mezo", q=>q.addEventListener("mouseout", function change(Event) {Event.target.style.backgroundColor = "";}));
-    querry_all("#ttt>.mezo", q=>q.addEventListener("mouseover", function change(Event) {
-        Event.target.style.backgroundColor = "darkgray";
-        if(Event.target.className == "mezo, selected")
-            Event.target.removeEventListener("mouseover", change);
-    }));
-    querry_all("#ttt>.mezo", q=>q.addEventListener("click", function change_simbol(Event) {
-        p_elem = Event.target.firstChild;
-        if(lepes % 2 == 0)
-        {
-            p_elem.innerHTML = "X";
-            querry("#progress>p:nth-child(2)").innerHTML = "Az aktuális játékos: O";
-        }
-        else
-        {
-            p_elem.innerHTML = "O";
-            querry("#progress>p:nth-child(2)").innerHTML = "Az aktuális játékos: X";
-        }
-        Event.target.removeEventListener("click", change_simbol);
-        Event.target.className += ", selected";
-        lepes++;
-        let status = calculate_winner();
-        if(status != 0 || lepes==Math.pow(board_size, 2))
-        {
-            let winner_text = "Döntetlen!";
-            if(status == 1)
-                winner_text = "X nyert!"
-            else if(status == -1)
-                winner_text = "O nyert!"
-            querry("#progress>p:nth-child(2)").innerHTML = `Eredmény: ${winner_text}`;
-            querry_all("#ttt>.mezo", q=>q.className += ", selected");
-            querry_all("#ttt>.mezo", q=>q.removeEventListener("click", change_simbol));
-        }
-    }));
 }
 
 function calculate_winner()
