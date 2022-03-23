@@ -15,7 +15,7 @@ function querry_all(name, arg) {
 }
 
 
-var board_size = 5;
+var board_size = 3;
 var lepes = 0;
 var p1_name = "X";
 var p2_name = "O";
@@ -70,14 +70,23 @@ function change_simbol(evt)
     }
 }
 
-function start_play(p1, p2)
+function start_play(p1, p2, size)
 {
     if(p1!="")
         p1_name = p1;
     if(p2!="")
         p2_name = p2;
+    if(size!="")
+        board_size = size;
+    //create board
+    for (let x = 0; x < Math.pow(board_size, 2); x++)
+    {
+        querry("#ttt").innerHTML += '<div><p> </p></div>';
+    }
+    querry_all("#ttt>div", q=>q.style.width = (100 / board_size) + "%");
     //disable forms
     querry_all("section>form>input", q=>q.disabled = true);
+    change_size();
     //addevent
     querry_all("#ttt>div", q=>q.className = "mezo");
     querry_all("#ttt>.mezo", q=>q.addEventListener("mouseout", background_out));
@@ -90,14 +99,8 @@ function start_play(p1, p2)
 
 function init() {
     querry("body").innerHTML = '<main><header><h1>Tic-Tac-Toe</h1></header><section></section><article></article><aside><div id="title"></div><div id="progress"><p>Játék állapota:</p><p>Névmegadásra várrás...</p></div></aside></main>';
-    querry("section").innerHTML = '<p>A játékosok neve:</p><form onsubmit="start_play(p1.value, p2.value);return false"><label for="p1">1. játékos (X)</label><br><input type="text" id="p1" name="p1" value="X"><br><label for="p2">2. játékos (O)</label><br><input type="text" id="p2" name="p2" value="O"><br><br><input type="submit" value="Kezdhetjük?"></form>';
+    querry("section").innerHTML = '<p>A játékosok neve:</p><form onsubmit="start_play(p1.value, p2.value, size.value);return false"><label for="p1">1. játékos (X)</label><br><input type="text" id="p1" name="p1" value="X"><br><label for="p2">2. játékos (O)</label><br><input type="text" id="p2" name="p2" value="O"><br><label for="size">board size</label><br><input type="text" id="size" name="size" value="3"><br><br><input type="submit" value="Kezdhetjük?"></form>';
     querry("article").innerHTML += '<div id="ttt"></div>';
-    for (let x = 0; x < Math.pow(board_size, 2); x++)
-    {
-        querry("#ttt").innerHTML += '<div><p> </p></div>';
-    }
-    querry_all("#ttt>div", q=>q.style.width = (100 / board_size) + "%");
-    change_size();
 }
 
 function calculate_winner()
