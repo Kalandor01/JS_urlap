@@ -1,4 +1,5 @@
 window.addEventListener("load", init);
+window.addEventListener("resize", change_size)
 
 function querry(name) {
     return document.querySelector(name);
@@ -13,10 +14,17 @@ function querry_all(name, arg) {
     document.querySelectorAll(name).forEach(elem => {arg(elem)});
 }
 
-var board_size = 5;
+
+var board_size = 15;
 var lepes = 0;
 var p1_name = "X";
 var p2_name = "O";
+
+function change_size()
+{
+    querry("#ttt").style.height = window.getComputedStyle(querry("#ttt")).width;
+    querry_all("#ttt>div", q=>q.style.height = window.getComputedStyle(querry("#ttt>div")).width);
+}
 
 function background_in(evt)
 {
@@ -77,20 +85,19 @@ function start_play(p1, p2)
     querry_all("#ttt>.mezo", q=>q.addEventListener("click", change_simbol));
     //kezd txt
     querry("#progress>p:nth-child(2)").innerHTML = p1_name + " kezd.";
+    change_size();
 }
 
 function init() {
     querry("body").innerHTML = '<main><header><h1>Tic-Tac-Toe</h1></header><section></section><article></article><aside><div id="title"></div><div id="progress"><p>Játék állapota:</p><p>Névmegadásra várrás...</p></div></aside></main>';
     querry("section").innerHTML = '<p>A játékosok neve:</p><form onsubmit="start_play(p1.value, p2.value);return false"><label for="p1">1. játékos (X)</label><br><input type="text" id="p1" name="p1" value="X"><br><label for="p2">2. játékos (O)</label><br><input type="text" id="p2" name="p2" value="O"><br><br><input type="submit" value="Kezdhetjük?"></form>';
     querry("article").innerHTML += '<div id="ttt"></div>';
-    for (let x = 0; x < Math.pow(board_size, 2); x++) {
-        querry("#ttt").innerHTML += '<div><p></p></div>';
+    for (let x = 0; x < Math.pow(board_size, 2); x++)
+    {
+        querry("#ttt").innerHTML += '<div><p> </p></div>';
     }
-    //css grid
-    let grids = "";
-    for (let x = 0; x < board_size; x++)
-        grids += "1fr ";
-    querry("#ttt").style.gridTemplateColumns = grids;
+    querry_all("#ttt>div", q=>q.style.width = (100 / board_size) + "%");
+    change_size();
 }
 
 function calculate_winner()
@@ -110,68 +117,89 @@ function calculate_winner()
     }
     console.log(board);
     //get points
+    let p1_check = "";
+    let p2_check = "";
+    if(board_size < 5)
+    {
+        for (let x = 0; x < board_size; x++)
+        {
+            p1_check += "X";
+            p2_check += "O";
+        }
+    }
+    else
+    {
+        p1_check = "XXXXX";
+        p2_check = "OOOOO";
+    }
     let x_points = 0, o_points = 0;
-    let line = true;
+    let line = "";
     //row
     for(let x = 0; x < board_size; x++)
     {
-        line = true;
-        for(let y = 1; y < board_size; y++)
+        for(let y = 0; y < board_size; y++)
         {
-            if(board[x][y-1] != board[x][y])
-                line = false;
+            if(board[x][y] != "X" && board[x][y] != "O")
+                line += " "
+            else
+                line += board[x][y];
         }
-        if(line)
-        {
-            if(board[x][0] == "X")
-                x_points += 1;
-            else if(board[x][0] == "O")
-                o_points += 1;
-        }
+        //console.log(line);
+        if(line.indexOf(p1_check) != -1)
+            x_points += 1;
+        else if(line.indexOf(p2_check) != -1)
+            o_points += 1;
 
     }
     //column
+    line = "";
     for(let y = 0; y < board_size; y++)
     {
         line = true;
-        for(let x = 1; x < board_size; x++)
+        for(let x = 0; x < board_size; x++)
         {
-            if(board[x-1][y] != board[x][y])
-                line = false;
+            if(board[x][y] != "X" && board[x][y] != "O")
+                line += " "
+            else
+                line += board[x][y];
         }
-        if(line)
-        {
-            if(board[0][y] == "X")
-                x_points += 1;
-            else if(board[0][y] == "O")
-                o_points += 1;
-        }
+        //console.log(line);
+        if(line.indexOf(p1_check) != -1)
+            x_points += 1;
+        else if(line.indexOf(p2_check) != -1)
+            o_points += 1;
 
     }
     //diagonal
-    let cross1 = true, cross2 = true;
-    for(let x = 1; x < board_size; x++)
+    for (let y = 0-board_size; y < board_size; y++)
     {
-        if(board[x-1][x-1] != board[x][x])
-            cross1 = false;
-        if(board[x-1][board_size-x] != board[x][board_size-1-x])
-            cross2 = false;
-    }
-    if(cross1)
-    {
-        if(board[0][0] == "X")
+        let cross1 = "", cross2 = "";
+        for(let x = 0; x < board_size; x++)
+        {
+            try
+            {
+                if(board[x][x+y] != "X" && board[x][x+y] != "O")
+                    cross1 += " "
+                else
+                    cross1 += board[x][x+y];
+                if(board[x][board_size-1-x+y] != "X" && board[x][board_size-1-x+y] != "O")
+                    cross2 += " "
+                else
+                    cross2 += board[x][board_size-1-x+y];
+            } catch (TypeError){}
+        }
+        console.log("shift " + y + ", cross 1: " + cross1);
+        console.log("shift " + y + ", cross 2: " + cross2);
+        if(cross1.indexOf(p1_check) != -1)
             x_points += 1;
-        else if(board[0][0] == "O")
+        else if(cross1.indexOf(p2_check) != -1)
             o_points += 1;
-    }
-    if(cross2)
-    {
-        if(board[0][board_size-1] == "X")
+        if(cross2.indexOf(p1_check) != -1)
             x_points += 1;
-        else if(board[0][board_size-1] == "O")
+        else if(cross2.indexOf(p2_check) != -1)
             o_points += 1;
+        console.log("x: " + x_points + ", o: " + o_points);
     }
-    console.log("x: " + x_points + ", o: " + o_points);
     //get winner
     if(x_points>o_points)
         return 1;
