@@ -15,7 +15,7 @@ function querry_all(name, arg) {
 }
 
 
-var board_size = 15;
+var board_size = 5;
 var lepes = 0;
 var p1_name = "X";
 var p2_name = "O";
@@ -144,18 +144,16 @@ function calculate_winner()
             else
                 line += board[x][y];
         }
-        //console.log(line);
-        if(line.indexOf(p1_check) != -1)
-            x_points += 1;
-        else if(line.indexOf(p2_check) != -1)
-            o_points += 1;
-
     }
+    //console.log(line);
+    if(line.indexOf(p1_check) != -1)
+        x_points++;
+    else if(line.indexOf(p2_check) != -1)
+        o_points++;
     //column
     line = "";
     for(let y = 0; y < board_size; y++)
     {
-        line = true;
         for(let x = 0; x < board_size; x++)
         {
             if(board[x][y] != "X" && board[x][y] != "O")
@@ -163,13 +161,12 @@ function calculate_winner()
             else
                 line += board[x][y];
         }
-        //console.log(line);
-        if(line.indexOf(p1_check) != -1)
-            x_points += 1;
-        else if(line.indexOf(p2_check) != -1)
-            o_points += 1;
-
     }
+    //console.log(line);
+    if(line.indexOf(p1_check) != -1)
+        x_points++;
+    else if(line.indexOf(p2_check) != -1)
+        o_points++;
     //diagonal
     for (let y = 0-board_size; y < board_size; y++)
     {
@@ -188,18 +185,18 @@ function calculate_winner()
                     cross2 += board[x][board_size-1-x+y];
             } catch (TypeError){}
         }
-        console.log("shift " + y + ", cross 1: " + cross1);
-        console.log("shift " + y + ", cross 2: " + cross2);
+        //console.log("shift " + y + ", cross 1: " + cross1);
+        //console.log("shift " + y + ", cross 2: " + cross2);
         if(cross1.indexOf(p1_check) != -1)
-            x_points += 1;
+            x_points++;
         else if(cross1.indexOf(p2_check) != -1)
-            o_points += 1;
+            o_points++;
         if(cross2.indexOf(p1_check) != -1)
-            x_points += 1;
+            x_points++;
         else if(cross2.indexOf(p2_check) != -1)
-            o_points += 1;
-        console.log("x: " + x_points + ", o: " + o_points);
+            o_points++;
     }
+    console.log("x: " + x_points + ", o: " + o_points);
     //get winner
     if(x_points>o_points)
         return 1;
