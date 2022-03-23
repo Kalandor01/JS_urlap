@@ -143,10 +143,11 @@ function calculate_winner()
         for(let y = 0; y < board_size; y++)
         {
             if(board[x][y] != "X" && board[x][y] != "O")
-                line += " "
+                line += " ";
             else
                 line += board[x][y];
         }
+        line += " ";
     }
     //console.log(line);
     if(line.indexOf(p1_check) != -1)
@@ -160,10 +161,11 @@ function calculate_winner()
         for(let x = 0; x < board_size; x++)
         {
             if(board[x][y] != "X" && board[x][y] != "O")
-                line += " "
+                line += " ";
             else
                 line += board[x][y];
         }
+        line += " ";
     }
     //console.log(line);
     if(line.indexOf(p1_check) != -1)
@@ -179,11 +181,11 @@ function calculate_winner()
             try
             {
                 if(board[x][x+y] != "X" && board[x][x+y] != "O")
-                    cross1 += " "
+                    cross1 += " ";
                 else
                     cross1 += board[x][x+y];
                 if(board[x][board_size-1-x+y] != "X" && board[x][board_size-1-x+y] != "O")
-                    cross2 += " "
+                    cross2 += " ";
                 else
                     cross2 += board[x][board_size-1-x+y];
             } catch (TypeError){}
